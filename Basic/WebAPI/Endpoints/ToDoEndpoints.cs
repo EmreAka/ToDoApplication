@@ -8,6 +8,7 @@ public static class ToDoEndpoints
     public static void RegisterToDoEndpoints(this WebApplication app)
     {
         var todo = app.MapGroup("todos")
+            .RequireAuthorization()
             .WithTags("Todos");
 
         todo.MapPost("",
@@ -15,20 +16,20 @@ public static class ToDoEndpoints
             {
                 await todoService.Add(toDoRequest);
                 return Results.Ok();
-            }).RequireAuthorization();
+            });
 
         todo.MapPut("",
             async(ITodoService todoService, TodoUpdateRequest todoUpdateRequest) =>
             {
                 await todoService.Update(todoUpdateRequest);
                 return Results.Ok();
-            }).RequireAuthorization();
+            });
 
         todo.MapGet("", 
             async (ITodoService todoService) =>
             {
                 var result = await todoService.GetAll();
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            });
     }
 }
