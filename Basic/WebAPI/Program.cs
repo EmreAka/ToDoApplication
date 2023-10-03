@@ -1,5 +1,7 @@
+using FluentValidation;
 using FootballAPI.Security;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using WebAPI.Data;
 using WebAPI.Endpoints;
 using WebAPI.Extensions;
@@ -9,6 +11,7 @@ using WebAPI.Services.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton<ITokenHelper, JwtHelper>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();

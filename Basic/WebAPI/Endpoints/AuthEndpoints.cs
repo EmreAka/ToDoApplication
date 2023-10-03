@@ -1,4 +1,5 @@
-﻿using WebAPI.ModelViews;
+﻿using WebAPI.Filters;
+using WebAPI.ModelViews;
 using WebAPI.Services.Abstract;
 
 namespace WebAPI.Endpoints;
@@ -23,6 +24,6 @@ public static class AuthEndpoints
             {
                 await authService.Register(registerRequest);
                 return Results.Ok();
-            });
+            }).AddEndpointFilter<ValidatorFilter<RegisterRequest>>();
     }
 }
