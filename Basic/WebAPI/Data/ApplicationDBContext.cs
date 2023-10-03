@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
+using WebAPI.Models;
 using WebAPI.Security;
 
 namespace WebAPI.Data;
@@ -10,5 +10,6 @@ public class ApplicationDBContext : DbContext
     public DbSet<OperationClaim> OperationClaims { get; set; }
     public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<ToDo> ToDos { get; set; }
     public ApplicationDBContext(DbContextOptions options) : base(options) { }
 }

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ITokenHelper, JwtHelper>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITodoService, ToDoService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegisterSwagger();
@@ -33,6 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.RegisterAuthEndpoints();
+app.RegisterToDoEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();
