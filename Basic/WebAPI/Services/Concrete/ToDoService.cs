@@ -44,15 +44,15 @@ public class ToDoService : ITodoService
     public async Task<List<ToDo>> GetAll()
     {
         var userId = GetUserId();
-        //var todos = await _applicationDBContext.ToDos
-        //    .Where(todo => todo.UserId == userId)
-        //    .ToListAsync();
+        var todos = await _applicationDBContext.ToDos
+            .Where(todo => todo.UserId == userId)
+            .ToListAsync();
 
-        var result = from todo in _applicationDBContext.ToDos
-                     where todo.UserId == userId
-                     select todo;
+        //var result = from todo in _applicationDBContext.ToDos
+        //             where todo.UserId == userId
+        //             select todo;
 
-        var todos = await result.ToListAsync();
+        //var todos = await result.ToListAsync();
 
         return todos;
     }

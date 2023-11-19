@@ -38,14 +38,14 @@ public class AuthService : IAuthService
         //CREATE AND SAVE REFRESH TOKEN
         var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
         var refreshToken = _tokenHelper.CreateRefreshToken(user, ipAddress);
-        refreshToken.Created = DateTime.UtcNow;
         await _applicationDBContext.RefreshTokens.AddAsync(refreshToken);
         await _applicationDBContext.SaveChangesAsync();
 
         LoginResponse loginResponse = new()
         {
             AccessToken = accessToken.Token,
-            RefreshToken = refreshToken.Token
+            RefreshToken = refreshToken.Token,
+            Expiration = accessToken.Expiration
         };
 
         return loginResponse;
@@ -73,6 +73,40 @@ public class AuthService : IAuthService
         };
         await _applicationDBContext.Users.AddAsync(userToRegister);
         await _applicationDBContext.SaveChangesAsync();
+    }
+
+    public async Task<LoginResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+    {
+        var refreshToken = await _applicationDBContext.RefreshTokens
+            .FirstOrDefaultAsync(refreshToken => refreshToken.Token == refreshTokenRequest.Token)
+            ?? throw new BadHttpRequestException("Refresh Token does not exist");
+
+        var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+        if (refreshToken.Revoked is not null)
+        {
+            await RevokeDescendantRefreshTokens(refreshToken, ipAddress, $"Attempted reuse of revoked ancestor token: {refreshToken.Token}");
+            throw new BadHttpRequestException("This refresh token is revoked because attempted reuse of revoked ancestor");
+        }
+
+        if (DateTime.UtcNow > refreshToken.Expires)
+            throw new BadHttpRequestException("Refresh token is not active");
+
+        var user = await _applicationDBContext.Users
+            .FirstOrDefaultAsync(user => user.Id == refreshToken.UserId);
+        var newRefreshToken = await RotateRefreshToken(user, refreshToken, ipAddress);
+        await _applicationDBContext.RefreshTokens.AddAsync(newRefreshToken);
+        await _applicationDBContext.SaveChangesAsync();
+
+        var accessToken = await CreateAccessToken(user);
+
+        LoginResponse loginResponse = new()
+        {
+            AccessToken = accessToken.Token,
+            RefreshToken = newRefreshToken.Token,
+            Expiration = accessToken.Expiration
+        };
+
+        return loginResponse;
     }
 
     private async Task<AccessToken> CreateAccessToken(User user)

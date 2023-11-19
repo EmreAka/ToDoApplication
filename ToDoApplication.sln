@@ -7,7 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic", "Basic", "{ED65C07C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Advance", "Advance", "{DD4127AC-78A2-44FB-9B99-286FF540BF8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "Basic\WebAPI\WebAPI.csproj", "{362489D0-EC4F-493D-9BFA-7E41E0DFB50B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "Basic\WebAPI\WebAPI.csproj", "{362489D0-EC4F-493D-9BFA-7E41E0DFB50B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demonstration", "Demonstration", "{62363384-605E-4622-90A9-DE801DD00FD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
